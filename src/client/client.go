@@ -48,10 +48,13 @@ type GClient struct {
 }
 
 func NewGRPCClient(url string, rpc string) (GClient, error) {
-	dialOpts := []grpc.DialOption{
+
+	const MaxRpcSize = 12000000
+	clientConn, err := grpc.Dial(
+		url,
 		grpc.WithInsecure(),
-	}
-	clientConn, err := grpc.Dial(url, dialOpts...)
+		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(MaxRpcSize)))
+	//grpc.Dial(host, grpc.WithInsecure(), grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(recvSize)))
 	if err != nil {
 		return GClient{}, err
 	}

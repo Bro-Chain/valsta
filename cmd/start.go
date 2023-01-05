@@ -2,9 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"strconv"
 
 	"github.com/jiuyunyue/valsta/src/client"
 	"github.com/jiuyunyue/valsta/src/types"
@@ -44,27 +42,28 @@ func ValSta(startHeight, endHeight int64) ([]types.ValidatorInfo, error) {
 
 		for k, v := range jailed {
 			val := uptime[k]
-			if v == true && val.Jailed == false && len(val.AccAddress) != 0 {
+			if v == true && val.Jailed == false && len(val.ValoperAddress) != 0 {
 				val.Jailed = true
 				uptime[k] = val
 			}
 		}
 
-		content, err := json.Marshal(uptime)
-		if err != nil {
-			return nil, err
-		}
-		err = ioutil.WriteFile(fmt.Sprintf("cache/%v_%v.json", run, end), content, 0777)
-		if err != nil {
-			return nil, err
-		}
+		// content, err := json.Marshal(uptime)
+		// if err != nil {
+		// 	return nil, err
+		// }
+		// err = ioutil.WriteFile(fmt.Sprintf("cache/%v_%v.json", run, end), content, 0777)
+		// if err != nil {
+		// 	return nil, err
+		// }
 
 		// overwrite
 		for k, v := range uptime {
 			uptimeTmp := all[k]
-			uptimeTmp.Address = v.Address
-			uptimeTmp.AccAddress = v.AccAddress
-			uptimeTmp.SurRate = v.SurRate
+			// uptimeTmp.Address = v.Address
+			// uptimeTmp.AccAddress = v.AccAddress
+			uptimeTmp.ValoperAddress = v.ValoperAddress
+			// uptimeTmp.SurRate = v.SurRate
 			uptimeTmp.Times += v.Times
 
 			if !uptimeTmp.Jailed {
@@ -75,12 +74,12 @@ func ValSta(startHeight, endHeight int64) ([]types.ValidatorInfo, error) {
 	}
 
 	// recalculate
-	for k, v := range all {
-		tmp := all[k]
-		num := float64(v.Times) / float64(endHeight-startHeight+1) * 100
-		tmp.SurRate = strconv.FormatFloat(num, 'f', 2, 64)
-		all[k] = tmp
-	}
+	// for k, v := range all {
+	// 	tmp := all[k]
+	// 	num := float64(v.Times) / float64(endHeight-startHeight+1) * 100
+	// 	tmp.SurRate = strconv.FormatFloat(num, 'f', 2, 64)
+	// 	all[k] = tmp
+	// }
 
 	content, err := json.Marshal(all)
 	if err != nil {

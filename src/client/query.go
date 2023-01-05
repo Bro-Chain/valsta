@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"strconv"
 	"strings"
 
 	typestx "github.com/cosmos/cosmos-sdk/types/tx"
@@ -24,7 +23,7 @@ import (
 
 func (c *GClient) QueryUptime(start, end int64) (sig types.Uptime, err error) {
 	sig = make(map[string]types.ValidatorInfo)
-	validators, err := c.QueryValidators()
+	// validators, err := c.QueryValidators()
 	if err != nil {
 		return nil, err
 	}
@@ -47,22 +46,27 @@ func (c *GClient) QueryUptime(start, end int64) (sig types.Uptime, err error) {
 				continue
 			}
 			key := strings.ToUpper(hex.EncodeToString(signature.ValidatorAddress))
+			valoper, err := sdk.ValAddressFromHex(hex.EncodeToString(signature.ValidatorAddress))
+			if err != nil {
+				return nil, err
+			}
 
 			val := sig[key]
-			val.Address = key
-			val.AccAddress = validators[key].String()
+			// val.Address = key
+			val.ValoperAddress = valoper.String()
+			// val.AccAddress = validators[key].String()
 			val.Times++
 			sig[key] = val
 		}
 	}
 
-	for k, v := range sig {
-		val := v
-		num := float64(v.Times) / float64(end-start+1) * 100
-		str := strconv.FormatFloat(num, 'f', 2, 64)
-		val.SurRate = str
-		sig[k] = val
-	}
+	// for k, v := range sig {
+	// 	val := v
+	// 	num := float64(v.Times) / float64(end-start+1) * 100
+	// 	str := strconv.FormatFloat(num, 'f', 2, 64)
+	// 	val.SurRate = str
+	// 	sig[k] = val
+	// }
 	return sig, nil
 }
 

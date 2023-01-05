@@ -23,15 +23,17 @@ func (v VoterInfo) String() string {
 }
 
 type ValidatorInfo struct {
-	Address    string
-	AccAddress string
-	Jailed     bool
-	Times      int64 `json:"times,string,omitempty"`
-	SurRate    string
+	// Address        string
+	// AccAddress     string
+	ValoperAddress string
+	Jailed         bool
+	Times          int64 `json:"times,string,omitempty"`
+	// SurRate        string
 }
 
 func (v ValidatorInfo) String() string {
-	return fmt.Sprintf("Address: %s, Times : %d, ValAddress: %s, Jailed : %v, SurRate : %v\n", v.Address, v.Times, v.AccAddress, v.Jailed, v.SurRate)
+	// return fmt.Sprintf("Address: %s, Times : %d, ValAddress: %s, Jailed : %v, SurRate : %v\n", v.Address, v.Times, v.ValoperAddress, v.Jailed, v.SurRate)
+	return fmt.Sprintf("Times : %d, ValAddress: %s, Jailed : %v\n", v.Times, v.ValoperAddress, v.Jailed)
 }
 
 type Uptime map[string]ValidatorInfo
@@ -40,12 +42,13 @@ func (s Uptime) String() string {
 	str := ""
 	for k, v := range s {
 		str += fmt.Sprintf(
-			"Validator Address: %s , Times : %d  , ValAddress: %s ,Jailed : %t ,SurRate: %v \n",
+			// "Validator Address: %s , Times : %d  , ValAddress: %s ,Jailed : %t ,SurRate: %v \n",
+			"Validator Address: %s , Times : %d  , ValAddress: %s ,Jailed : %t \n",
 			k,
 			v.Times,
-			v.AccAddress,
+			v.ValoperAddress,
 			v.Jailed,
-			v.SurRate,
+			// v.SurRate,
 		)
 	}
 	return str
